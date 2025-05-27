@@ -2,12 +2,32 @@
 {% block title %}Verify OTP{% endblock %}
 {% block content %}
 <div class="centered">
-     <link rel="icon" href="{{ url_for('static', filename='favicon.ico') }}" type="image/x-icon">
+    <!-- Favicon -->
+    <link rel="icon" href="{{ url_for('static', filename='favicon.ico') }}" type="image/x-icon">
+
+    <!-- Meta Tags for SEO -->
+    <meta name="title" content="Chat Bot - Built by Pranav Rayban">
+    <meta name="description" content="A simple chatbot web application built using Python and Node.js.">
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://chatbot-ten-wine.vercel.app/">
+    <meta property="og:title" content="Chat Bot - Built by Pranav Rayban">
+    <meta property="og:description" content="A simple chatbot web application built using Python and Node.js.">
+    <meta property="og:image" content="https://chatbot-ten-wine.vercel.app/static/favicon.ico">
+
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:url" content="https://chatbot-ten-wine.vercel.app/">
+    <meta name="twitter:title" content="Chat Bot - Built by Pranav Rayban">
+    <meta name="twitter:description" content="A simple chatbot web application built using Python and Node.js.">
+    <meta name="twitter:image" content="https://chatbot-ten-wine.vercel.app/static/favicon.ico">
+
     <link rel="stylesheet" href="{{ url_for('static', filename='css/bot.css') }}">
-  <h2>Enter OTP</h2>
-  <form action="/verify" method="POST">
-    <input type="text" name="otp" placeholder="Enter OTP" required />
-    <button type="submit">Verify</button>
-  </form>
+    <h2>Enter OTP</h2>
+    <form action="/verify" method="POST">
+        <input type="text" name="otp" placeholder="Enter OTP" required />
+        <button type="submit">Verify</button>
+    </form>
 </div>
 {% endblock %}
