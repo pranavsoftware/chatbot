@@ -1,13 +1,36 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>{% block title %}Chatbot{% endblock %}</title>
-  <link rel="icon" href="{{ url_for('static', filename='favicon.ico') }}" type="image/x-icon">
-  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{% block title %}Chatbot{% endblock %}</title>
+    <!-- Favicon -->
+    <link rel="icon" href="{{ url_for('static', filename='favicon.ico') }}" type="image/x-icon">
+
+    <!-- Meta Tags for SEO -->
+    <meta name="title" content="Chat Bot - Built by Pranav Rayban">
+    <meta name="description" content="A simple chatbot web application built using Python and Node.js.">
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://chatbot-ten-wine.vercel.app/">
+    <meta property="og:title" content="Chat Bot - Built by Pranav Rayban">
+    <meta property="og:description" content="A simple chatbot web application built using Python and Node.js.">
+    <meta property="og:image" content="https://chatbot-ten-wine.vercel.app/static/favicon.ico">
+
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:url" content="https://chatbot-ten-wine.vercel.app/">
+    <meta name="twitter:title" content="Chat Bot - Built by Pranav Rayban">
+    <meta name="twitter:description" content="A simple chatbot web application built using Python and Node.js.">
+    <meta name="twitter:image" content="https://chatbot-ten-wine.vercel.app/static/favicon.ico">
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 </head>
+
 <body>
-  {% block content %}{% endblock %}
+    {% block content %}{% endblock %}
 </body>
+
 </html>
