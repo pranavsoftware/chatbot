@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+{% block title %}Login{% endblock %}
+{% block content %}
+<div class="centered">
+     <link rel="icon" href="{{ url_for('static', filename='favicon.ico') }}" type="image/x-icon">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/bot.css') }}">
+  <h2>Login</h2>
+  <form action="/login" method="POST">
+    <input type="email" name="email" placeholder="Email" required />
+    <button type="submit">Send OTP</button>
+  </form>
+</div>
+{% endblock %}

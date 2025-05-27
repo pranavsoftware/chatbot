@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+{% block title %}Verify OTP{% endblock %}
+{% block content %}
+<div class="centered">
+     <link rel="icon" href="{{ url_for('static', filename='favicon.ico') }}" type="image/x-icon">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/bot.css') }}">
+  <h2>Enter OTP</h2>
+  <form action="/verify" method="POST">
+    <input type="text" name="otp" placeholder="Enter OTP" required />
+    <button type="submit">Verify</button>
+  </form>
+</div>
+{% endblock %}

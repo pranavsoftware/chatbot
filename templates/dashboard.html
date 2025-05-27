@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - ChatBot</title>
+     <link rel="icon" href="{{ url_for('static', filename='favicon.ico') }}" type="image/x-icon">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <div class="dashboard-container">
+        <header class="header">
+            <h1>AI ChatBot Dashboard</h1>
+            <div class="header-actions">
+                <button class="btn btn-clear" onclick="clearAllHistory()">Clear All History</button>
+                <a href="/logout" class="btn btn-logout">Logout</a>
+            </div>
+        </header>
+
+        <main class="main-content">
+            <div class="chat-section">
+                <div class="chat-form">
+                    <form id="chatForm">
+                        <div class="form-group">
+                            <label for="prompt">Ask me anything:</label>
+                            <textarea 
+                                id="prompt" 
+                                name="prompt" 
+                                class="form-control" 
+                                placeholder="Type your question or message here..."
+                                required
+                            ></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-send" id="sendBtn">
+                            Send Message
+                        </button>
+                    </form>
+                </div>
+
+                <div class="response-section">
+                    <div class="response-card">
+                        <div class="loading" id="loading">
+                            <p>🤖 Thinking...</p>
+                        </div>
+                        <div class="response-content" id="response">
+                            Welcome! Ask me anything and I'll do my best to help you.
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <aside class="history-section">
+                <div class="history-header">
+                    <h2>Chat History</h2>
+                    <span class="badge">{{ chats|length }} chats</span>
+                </div>
+                
+                <div class="history-list" id="historyList">
+                    {% if chats %}
+                        {% for chat in chats %}
+                        <div class="history-item" data-index="{{ loop.index0 }}" onclick="showChatModal({{ loop.index0 }})">
+                            <div class="history-prompt">
+                                {{ chat.prompt[:100] }}{% if chat.prompt|length > 100 %}...{% endif %}
+                            </div>
+                            <div class="history-response">
+                                {{ chat.response[:150] }}{% if chat.response|length > 150 %}...{% endif %}
+                            </div>
+                            <div class="history-meta">
+                                <span>{{ chat.timestamp }}</span>
+                                <button class="btn btn-delete" onclick="event.stopPropagation(); showDeleteModal({{ loop.index0 }})">
+                                    Delete
+                                </button>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    {% else %}
+                        <div class="empty-state">
+                            <p>No chat history yet. Start a conversation!</p>
+                        </div>
+                    {% endif %}
+                </div>
+            </aside>
+        </main>
+    </div>
+
+    <!-- Chat Detail Modal -->
+    <div id="chatModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">Chat Details</h3>
+                <button class="modal-close" onclick="closeChatModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="modal-section">
+                    <h4>💬 Your Question</h4>
+                    <div class="modal-text" id="modalPrompt"></div>
+                </div>
+                <div class="modal-section">
+                    <h4>🤖 AI Response</h4>
+                    <div class="modal-text" id="modalResponse"></div>
+                </div>
+                <div class="modal-section">
+                    <h4>🕒 Timestamp</h4>
+                    <div class="modal-timestamp" id="modalTimestamp"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Delete Confirmation Modal -->
+    <div id="deleteModal" class="modal delete-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">Confirm Delete</h3>
+                <button class="modal-close" onclick="closeDeleteModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="delete-icon">🗑️</div>
+                <h3 class="delete-title">Delete Chat?</h3>
+                <p class="delete-message">Are you sure you want to delete this chat? This action cannot be undone.</p>
+                <div class="delete-actions">
+                    <button class="btn btn-cancel" onclick="closeDeleteModal()">Cancel</button>
+                    <button class="btn btn-confirm" onclick="confirmDelete()">Delete</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Store chat history data
+        const chatHistory = {{ chats | tojson }};
+        let currentDeleteIndex = null;
+        
+        // Modal functionality
+        function showChatModal(index) {
+            const chat = chatHistory[index];
+            if (!chat) return;
+            
+            document.getElementById('modalPrompt').textContent = chat.prompt;
+            document.getElementById('modalResponse').textContent = chat.response;
+            document.getElementById('modalTimestamp').textContent = chat.timestamp;
+            
+            const modal = document.getElementById('chatModal');
+            modal.classList.add('show');
+            modal.style.display = 'flex';
+            document.body.style.overflow = 'hidden';
+        }
+        
+        function closeChatModal() {
+            const modal = document.getElementById('chatModal');
+            modal.style.animation = 'slideOut 0.3s ease';
+            setTimeout(() => {
+                modal.classList.remove('show');
+                modal.style.display = 'none';
+                modal.style.animation = '';
+                document.body.style.overflow = '';
+            }, 300);
+        }
+        
+        function showDeleteModal(index) {
+            currentDeleteIndex = index;
+            const modal = document.getElementById('deleteModal');
+            modal.classList.add('show');
+            modal.style.display = 'flex';
+            document.body.style.overflow = 'hidden';
+        }
+        
+        function closeDeleteModal() {
+            const modal = document.getElementById('deleteModal');
+            modal.style.animation = 'slideOut 0.3s ease';
+            setTimeout(() => {
+                modal.classList.remove('show');
+                modal.style.display = 'none';
+                modal.style.animation = '';
+                document.body.style.overflow = '';
+                currentDeleteIndex = null;
+            }, 300);
+        }
+        
+        async function confirmDelete() {
+            if (currentDeleteIndex === null) return;
+            
+            try {
+                const res = await fetch('/delete_history', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ index: currentDeleteIndex })
+                });
+                
+                const data = await res.json();
+                
+                if (data.success) {
+                    closeDeleteModal();
+                    setTimeout(() => {
+                        window.location.reload();
+                    }, 300);
+                } else {
+                    alert('Error deleting chat: ' + (data.error || 'Unknown error'));
+                }
+            } catch (error) {
+                alert('Error deleting chat: ' + error.message);
+            }
+        }
+        
+        // Close modals when clicking outside
+        window.onclick = function(event) {
+            const chatModal = document.getElementById('chatModal');
+            const deleteModal = document.getElementById('deleteModal');
+            
+            if (event.target === chatModal) {
+                closeChatModal();
+            }
+            if (event.target === deleteModal) {
+                closeDeleteModal();
+            }
+        }
+        
+        // Close modals with Escape key
+        document.addEventListener('keydown', function(event) {
+            if (event.key === 'Escape') {
+                const chatModal = document.getElementById('chatModal');
+                const deleteModal = document.getElementById('deleteModal');
+                
+                if (chatModal.classList.contains('show')) {
+                    closeChatModal();
+                }
+                if (deleteModal.classList.contains('show')) {
+                    closeDeleteModal();
+                }
+            }
+        });
+        
+        // Form submission handler
+        document.getElementById('chatForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const promptInput = document.getElementById('prompt');
+            const sendBtn = document.getElementById('sendBtn');
+            const loading = document.getElementById('loading');
+            const response = document.getElementById('response');
+            
+            const prompt = promptInput.value.trim();
+            if (!prompt) return;
+            
+            // Show loading state
+            sendBtn.disabled = true;
+            sendBtn.textContent = 'Sending...';
+            loading.style.display = 'block';
+            response.style.display = 'none';
+            
+            try {
+                const formData = new FormData();
+                formData.append('prompt', prompt);
+                
+                const res = await fetch('/chat', {
+                    method: 'POST',
+                    body: formData
+                });
+                
+                const data = await res.json();
+                
+                if (data.error) {
+                    throw new Error(data.error);
+                }
+                
+                // Show response
+                response.textContent = data.response;
+                response.style.display = 'block';
+                loading.style.display = 'none';
+                
+                // Clear form
+                promptInput.value = '';
+                
+                // Reload page to update history
+                setTimeout(() => {
+                    window.location.reload();
+                }, 1000);
+                
+            } catch (error) {
+                response.textContent = 'Error: ' + error.message;
+                response.style.display = 'block';
+                loading.style.display = 'none';
+            } finally {
+                sendBtn.disabled = false;
+                sendBtn.textContent = 'Send Message';
+            }
+        });
+        
+        // Delete specific history item (legacy function - now uses modal)
+        async function deleteHistory(index) {
+            showDeleteModal(index);
+        }
+        
+        // Clear all history
+        async function clearAllHistory() {
+            if (!confirm('Are you sure you want to delete all chat history? This cannot be undone.')) return;
+            
+            try {
+                const res = await fetch('/clear_all_history', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                });
+                
+                const data = await res.json();
+                
+                if (data.success) {
+                    window.location.reload();
+                } else {
+                    alert('Error clearing history: ' + (data.error || 'Unknown error'));
+                }
+            } catch (error) {
+                alert('Error clearing history: ' + error.message);
+            }
+        }
+        
+        // Auto-resize textarea
+        document.getElementById('prompt').addEventListener('input', function() {
+            this.style.height = 'auto';
+            this.style.height = Math.min(this.scrollHeight, 200) + 'px';
+        });
+    </script>
+</body>
+</html>
