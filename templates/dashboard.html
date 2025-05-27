@@ -1,12 +1,34 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard - ChatBot</title>
-     <link rel="icon" href="{{ url_for('static', filename='favicon.ico') }}" type="image/x-icon">
+    <!-- Favicon -->
+    <link rel="icon" href="{{ url_for('static', filename='favicon.ico') }}" type="image/x-icon">
+
+    <!-- Meta Tags for SEO -->
+    <meta name="title" content="Chat Bot - Built by Pranav Rayban">
+    <meta name="description" content="A simple chatbot web application built using Python and Node.js.">
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://chatbot-ten-wine.vercel.app/">
+    <meta property="og:title" content="Chat Bot - Built by Pranav Rayban">
+    <meta property="og:description" content="A simple chatbot web application built using Python and Node.js.">
+    <meta property="og:image" content="https://chatbot-ten-wine.vercel.app/static/favicon.ico">
+
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:url" content="https://chatbot-ten-wine.vercel.app/">
+    <meta name="twitter:title" content="Chat Bot - Built by Pranav Rayban">
+    <meta name="twitter:description" content="A simple chatbot web application built using Python and Node.js.">
+    <meta name="twitter:image" content="https://chatbot-ten-wine.vercel.app/static/favicon.ico">
+
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 </head>
+
 <body>
     <div class="dashboard-container">
         <header class="header">
@@ -23,13 +45,8 @@
                     <form id="chatForm">
                         <div class="form-group">
                             <label for="prompt">Ask me anything:</label>
-                            <textarea 
-                                id="prompt" 
-                                name="prompt" 
-                                class="form-control" 
-                                placeholder="Type your question or message here..."
-                                required
-                            ></textarea>
+                            <textarea id="prompt" name="prompt" class="form-control"
+                                placeholder="Type your question or message here..." required></textarea>
                         </div>
                         <button type="submit" class="btn btn-send" id="sendBtn">
                             Send Message
@@ -54,29 +71,30 @@
                     <h2>Chat History</h2>
                     <span class="badge">{{ chats|length }} chats</span>
                 </div>
-                
+
                 <div class="history-list" id="historyList">
                     {% if chats %}
-                        {% for chat in chats %}
-                        <div class="history-item" data-index="{{ loop.index0 }}" onclick="showChatModal({{ loop.index0 }})">
-                            <div class="history-prompt">
-                                {{ chat.prompt[:100] }}{% if chat.prompt|length > 100 %}...{% endif %}
-                            </div>
-                            <div class="history-response">
-                                {{ chat.response[:150] }}{% if chat.response|length > 150 %}...{% endif %}
-                            </div>
-                            <div class="history-meta">
-                                <span>{{ chat.timestamp }}</span>
-                                <button class="btn btn-delete" onclick="event.stopPropagation(); showDeleteModal({{ loop.index0 }})">
-                                    Delete
-                                </button>
-                            </div>
+                    {% for chat in chats %}
+                    <div class="history-item" data-index="{{ loop.index0 }}" onclick="showChatModal({{ loop.index0 }})">
+                        <div class="history-prompt">
+                            {{ chat.prompt[:100] }}{% if chat.prompt|length > 100 %}...{% endif %}
                         </div>
-                        {% endfor %}
+                        <div class="history-response">
+                            {{ chat.response[:150] }}{% if chat.response|length > 150 %}...{% endif %}
+                        </div>
+                        <div class="history-meta">
+                            <span>{{ chat.timestamp }}</span>
+                            <button class="btn btn-delete"
+                                onclick="event.stopPropagation(); showDeleteModal({{ loop.index0 }})">
+                                Delete
+                            </button>
+                        </div>
+                    </div>
+                    {% endfor %}
                     {% else %}
-                        <div class="empty-state">
-                            <p>No chat history yet. Start a conversation!</p>
-                        </div>
+                    <div class="empty-state">
+                        <p>No chat history yet. Start a conversation!</p>
+                    </div>
                     {% endif %}
                 </div>
             </aside>
@@ -130,22 +148,22 @@
         // Store chat history data
         const chatHistory = {{ chats | tojson }};
         let currentDeleteIndex = null;
-        
+
         // Modal functionality
         function showChatModal(index) {
             const chat = chatHistory[index];
             if (!chat) return;
-            
+
             document.getElementById('modalPrompt').textContent = chat.prompt;
             document.getElementById('modalResponse').textContent = chat.response;
             document.getElementById('modalTimestamp').textContent = chat.timestamp;
-            
+
             const modal = document.getElementById('chatModal');
             modal.classList.add('show');
             modal.style.display = 'flex';
             document.body.style.overflow = 'hidden';
         }
-        
+
         function closeChatModal() {
             const modal = document.getElementById('chatModal');
             modal.style.animation = 'slideOut 0.3s ease';
@@ -156,7 +174,7 @@
                 document.body.style.overflow = '';
             }, 300);
         }
-        
+
         function showDeleteModal(index) {
             currentDeleteIndex = index;
             const modal = document.getElementById('deleteModal');
@@ -164,7 +182,7 @@
             modal.style.display = 'flex';
             document.body.style.overflow = 'hidden';
         }
-        
+
         function closeDeleteModal() {
             const modal = document.getElementById('deleteModal');
             modal.style.animation = 'slideOut 0.3s ease';
@@ -176,10 +194,10 @@
                 currentDeleteIndex = null;
             }, 300);
         }
-        
+
         async function confirmDelete() {
             if (currentDeleteIndex === null) return;
-            
+
             try {
                 const res = await fetch('/delete_history', {
                     method: 'POST',
@@ -188,9 +206,9 @@
                     },
                     body: JSON.stringify({ index: currentDeleteIndex })
                 });
-                
+
                 const data = await res.json();
-                
+
                 if (data.success) {
                     closeDeleteModal();
                     setTimeout(() => {
@@ -203,12 +221,12 @@
                 alert('Error deleting chat: ' + error.message);
             }
         }
-        
+
         // Close modals when clicking outside
-        window.onclick = function(event) {
+        window.onclick = function (event) {
             const chatModal = document.getElementById('chatModal');
             const deleteModal = document.getElementById('deleteModal');
-            
+
             if (event.target === chatModal) {
                 closeChatModal();
             }
@@ -216,13 +234,13 @@
                 closeDeleteModal();
             }
         }
-        
+
         // Close modals with Escape key
-        document.addEventListener('keydown', function(event) {
+        document.addEventListener('keydown', function (event) {
             if (event.key === 'Escape') {
                 const chatModal = document.getElementById('chatModal');
                 const deleteModal = document.getElementById('deleteModal');
-                
+
                 if (chatModal.classList.contains('show')) {
                     closeChatModal();
                 }
@@ -231,53 +249,53 @@
                 }
             }
         });
-        
+
         // Form submission handler
-        document.getElementById('chatForm').addEventListener('submit', async function(e) {
+        document.getElementById('chatForm').addEventListener('submit', async function (e) {
             e.preventDefault();
-            
+
             const promptInput = document.getElementById('prompt');
             const sendBtn = document.getElementById('sendBtn');
             const loading = document.getElementById('loading');
             const response = document.getElementById('response');
-            
+
             const prompt = promptInput.value.trim();
             if (!prompt) return;
-            
+
             // Show loading state
             sendBtn.disabled = true;
             sendBtn.textContent = 'Sending...';
             loading.style.display = 'block';
             response.style.display = 'none';
-            
+
             try {
                 const formData = new FormData();
                 formData.append('prompt', prompt);
-                
+
                 const res = await fetch('/chat', {
                     method: 'POST',
                     body: formData
                 });
-                
+
                 const data = await res.json();
-                
+
                 if (data.error) {
                     throw new Error(data.error);
                 }
-                
+
                 // Show response
                 response.textContent = data.response;
                 response.style.display = 'block';
                 loading.style.display = 'none';
-                
+
                 // Clear form
                 promptInput.value = '';
-                
+
                 // Reload page to update history
                 setTimeout(() => {
                     window.location.reload();
                 }, 1000);
-                
+
             } catch (error) {
                 response.textContent = 'Error: ' + error.message;
                 response.style.display = 'block';
@@ -287,16 +305,16 @@
                 sendBtn.textContent = 'Send Message';
             }
         });
-        
+
         // Delete specific history item (legacy function - now uses modal)
         async function deleteHistory(index) {
             showDeleteModal(index);
         }
-        
+
         // Clear all history
         async function clearAllHistory() {
             if (!confirm('Are you sure you want to delete all chat history? This cannot be undone.')) return;
-            
+
             try {
                 const res = await fetch('/clear_all_history', {
                     method: 'POST',
@@ -304,9 +322,9 @@
                         'Content-Type': 'application/json'
                     }
                 });
-                
+
                 const data = await res.json();
-                
+
                 if (data.success) {
                     window.location.reload();
                 } else {
@@ -316,12 +334,13 @@
                 alert('Error clearing history: ' + error.message);
             }
         }
-        
+
         // Auto-resize textarea
-        document.getElementById('prompt').addEventListener('input', function() {
+        document.getElementById('prompt').addEventListener('input', function () {
             this.style.height = 'auto';
             this.style.height = Math.min(this.scrollHeight, 200) + 'px';
         });
     </script>
 </body>
+
 </html>
