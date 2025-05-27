@@ -1,9 +1,30 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-     <link rel="icon" href="{{ url_for('static', filename='favicon.ico') }}" type="image/x-icon">
+    <!-- Favicon -->
+    <link rel="icon" href="{{ url_for('static', filename='favicon.ico') }}" type="image/x-icon">
+
+    <!-- Meta Tags for SEO -->
+    <meta name="title" content="Chat Bot - Built by Pranav Rayban">
+    <meta name="description" content="A simple chatbot web application built using Python and Node.js.">
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://chatbot-ten-wine.vercel.app/">
+    <meta property="og:title" content="Chat Bot - Built by Pranav Rayban">
+    <meta property="og:description" content="A simple chatbot web application built using Python and Node.js.">
+    <meta property="og:image" content="https://chatbot-ten-wine.vercel.app/static/favicon.ico">
+
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:url" content="https://chatbot-ten-wine.vercel.app/">
+    <meta name="twitter:title" content="Chat Bot - Built by Pranav Rayban">
+    <meta name="twitter:description" content="A simple chatbot web application built using Python and Node.js.">
+    <meta name="twitter:image" content="https://chatbot-ten-wine.vercel.app/static/favicon.ico">
+
     <title>Welcome to ChatBot</title>
     <style>
         * {
@@ -39,7 +60,7 @@
             font-size: 3.5rem;
             font-weight: 700;
             color: white;
-            text-shadow: 0 4px 8px rgba(0,0,0,0.3);
+            text-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
             margin-bottom: 0.5rem;
             background: linear-gradient(45deg, #ff6b6b, #4ecdc4, #45b7d1);
             background-size: 300% 300%;
@@ -49,8 +70,15 @@
         }
 
         @keyframes gradientShift {
-            0%, 100% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
+
+            0%,
+            100% {
+                background-position: 0% 50%;
+            }
+
+            50% {
+                background-position: 100% 50%;
+            }
         }
 
         .main-content {
@@ -60,23 +88,26 @@
             margin-bottom: 3rem;
         }
 
-        .project-card, .developer-card {
+        .project-card,
+        .developer-card {
             background: rgba(255, 255, 255, 0.95);
             backdrop-filter: blur(10px);
             border-radius: 20px;
             padding: 2.5rem;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
-            border: 1px solid rgba(255,255,255,0.2);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
             transition: all 0.3s ease;
             animation: fadeInUp 1s ease-out;
         }
 
-        .project-card:hover, .developer-card:hover {
+        .project-card:hover,
+        .developer-card:hover {
             transform: translateY(-10px);
-            box-shadow: 0 30px 60px rgba(0,0,0,0.15);
+            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.15);
         }
 
-        .project-card h2, .developer-card h3 {
+        .project-card h2,
+        .developer-card h3 {
             color: #2c3e50;
             margin-bottom: 1.5rem;
             font-size: 1.8rem;
@@ -136,8 +167,15 @@
         }
 
         @keyframes pulse {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.6; }
+
+            0%,
+            100% {
+                opacity: 1;
+            }
+
+            50% {
+                opacity: 0.6;
+            }
         }
 
         .developer-card h3::after {
@@ -221,7 +259,7 @@
             left: -100%;
             width: 100%;
             height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
             transition: left 0.5s;
         }
 
@@ -280,8 +318,15 @@
         }
 
         @keyframes float {
-            0%, 100% { transform: translateY(0px) rotate(0deg); }
-            50% { transform: translateY(-20px) rotate(180deg); }
+
+            0%,
+            100% {
+                transform: translateY(0px) rotate(0deg);
+            }
+
+            50% {
+                transform: translateY(-20px) rotate(180deg);
+            }
         }
 
         @keyframes fadeInDown {
@@ -289,6 +334,7 @@
                 opacity: 0;
                 transform: translateY(-30px);
             }
+
             to {
                 opacity: 1;
                 transform: translateY(0);
@@ -300,6 +346,7 @@
                 opacity: 0;
                 transform: translateY(30px);
             }
+
             to {
                 opacity: 1;
                 transform: translateY(0);
@@ -316,7 +363,8 @@
                 gap: 1.5rem;
             }
 
-            .project-card, .developer-card {
+            .project-card,
+            .developer-card {
                 padding: 2rem;
             }
 
@@ -336,12 +384,14 @@
                 font-size: 2rem;
             }
 
-            .project-card, .developer-card {
+            .project-card,
+            .developer-card {
                 padding: 1.5rem;
             }
         }
     </style>
 </head>
+
 <body>
     <div class="floating-elements">
         <div class="floating-circle"></div>
@@ -358,11 +408,11 @@
             <div class="project-card">
                 <h2>About This Project</h2>
                 <p class="project-description">
-                    This is an intelligent ChatBot application designed to provide interactive 
-                    conversations and assistance. Built with modern web technologies, this project 
+                    This is an intelligent ChatBot application designed to provide interactive
+                    conversations and assistance. Built with modern web technologies, this project
                     demonstrates real-time communication capabilities and user-friendly interface design.
                 </p>
-                
+
                 <div class="features-title">Key Features:</div>
                 <ul class="features-list">
                     <li>Real-time chat interface</li>
@@ -376,12 +426,13 @@
                 <h3>Developer Information</h3>
                 <div class="dev-info">
                     <p><strong>Developer:</strong> Pranav Rayban</p>
-                    <p><strong>LinkedIn:</strong> 
-                        <a href="linkedin.com/in/pranav-rayban-vit2027" target="_blank" rel="noopener noreferrer" class="contact-link">
+                    <p><strong>LinkedIn:</strong>
+                        <a href="linkedin.com/in/pranav-rayban-vit2027" target="_blank" rel="noopener noreferrer"
+                            class="contact-link">
                             🔗Linkedin ID
                         </a>
                     </p>
-                    <p><strong>Email:</strong> 
+                    <p><strong>Email:</strong>
                         <a href="mailto:raybanpranav@gmail.com" class="contact-link">
                             raybanpranav@gmailcom
                         </a>
@@ -396,4 +447,5 @@
         </div>
     </div>
 </body>
+
 </html>
